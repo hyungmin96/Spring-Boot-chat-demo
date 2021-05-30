@@ -1,28 +1,29 @@
 package com.chatting.chat.controllers.site;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import com.chatting.chat.domains.ChatVo;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-@RequiredArgsConstructor
 public class siteController {
     
-    // @Autowired
-    // private ChatService chatService;
+    @Autowired
+    private SimpMessagingTemplate template;
 
-    // @Autowired
-    // private ProjectSerivce projectService;
+    @MessageMapping("/chat/enter")
+    public void enter(ChatVo message){
+        System.out.println("입장");
+        template.convertAndSend("/sub/chat/room/" + message.getRoomId(), message);
+    }
 
-    // @GetMapping("/project/{nickname}/{title}/chatting") // 첫 화면 매핑
-    // public String index(Model model, @PathVariable String nickname, @PathVariable String title){
-    //     //nickname과 projectTitle로 projectId 찾기
-    //     Long projectId = projectService.getProjectId(nickname, title);
-    // }
+    @MessageMapping("/chat/message")
+    public void message(ChatVo message){
+        template.convertAndSend("/sub/chat/room/" + message.getRoomId(), message);
+    }
 
     @GetMapping("/")
     public String Home(){

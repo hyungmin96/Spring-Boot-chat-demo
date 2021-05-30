@@ -1,39 +1,13 @@
-$(document).ready(function(){
+var sock = new SockJS("/ws/chat");
+var stomp = webstomp.over(sock);
 
-    WebSocket.init();
+stomp.connect({}, function(frame){
 
-})
+});
 
-function connect(){
-    var socket = new SockJS("/websockethandler");
-    stompClient = Stomp.over(socket);
+// var websocket = new WebSocket("/ws/chat");
+// var stomp = websocket.over(websocket);
 
-    stompClient.connect({}, function(){
-        stompClient.subscribe('/topic/roomId', function(msg){
-            printMessage(JSON.parse(msg.body).sendMessage + '/' + 
-            JSON.parse(msg.body).senderName);
-        });
+// stomp.connect({}, function(frame)){
 
-        stompClient.subscribe('/topic/out', function(msg){
-            printMessage(msg.body);
-        });
-
-        stompClient.subscribe('/topic/in', function(msg){
-            printMessage(msg.body);
-        });
-
-        stompClient.send('/app/in', {}, usersessionid.value + ' is in chatroom');
-
-    });
-}
-
-function disconnect(){
-    if(stompClient != null){
-        stompClient.send('/app/out', {}. usersessionid.value + ' is out chatroom')
-        stompClient.disconnect();
-    }
-}
-
-function sendMessage(text){
-    stompClient.send('/app/hello', {}, JSON.stringify({'sendMessage' : text, 'senderName': '' + usersessionid.value}));
-}
+// }
